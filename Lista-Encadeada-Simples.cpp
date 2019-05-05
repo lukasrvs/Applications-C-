@@ -1,20 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct NODE{
-	int num; //dado
-	struct NODE *next; //Elo
-} Node;
+typedef struct sNodo{
+	int info; //dado
+	struct sNodo *next; //Elo
+} Nodo;
 
-typedef struct Lista{
-	NODE *head; //cabeça da lista
-	NODE *tail; //cauda da lista
+typedef struct sLista{
+	Nodo *head; //cabeça da lista
+	Nodo *tail; //cauda da lista
 	int size; //tamanho
-} LISTA;
+} Lista;
 
 Lista* criaLista(){
-	LISTA *lista;
-	lista = (LISTA*) malloc (sizeof(LISTA));
+	Lista *lista;
+	lista = (Lista*) malloc (sizeof(Lista));
 	lista->head = NULL;
 	lista->tail = NULL;
 	lista->size = 0;
@@ -22,18 +22,50 @@ Lista* criaLista(){
 	return lista;
 }
 
-Node* criaNode(int num){
-	Node *nodo;
-	nodo = (Node*) malloc (sizeof(Node));
-	nodo->num = num;
+Nodo* criaNodo(int info){
+	Nodo *nodo;
+	nodo = (Nodo*) malloc (sizeof(Nodo));
+	nodo->info = info;
 	nodo->next = NULL;
 	
 	return nodo;
 }
 
-void insercao(LISTA *lista, Node *pivo, int num){
-	Node *novo_nodo;
-	novo_nodo = criaNode(num);
+void insercao(Lista *lista, Nodo *pivo, int info);
+int remocao(Lista *lista, Nodo *pivo);
+void percorreListaCabecaCauda(Lista *lista);
+
+int main(){
+	Lista *a;
+	a = criaLista(); //cria lista
+	
+	insercao(a, NULL, 10);
+	insercao(a, a->head, 20);
+	insercao(a, a->tail, 30);
+	insercao(a, a->head, 50);
+
+	//percorre lista
+	percorreListaCabecaCauda(a);
+	
+	printf("\nhead: %d\n", a->head->info);
+	printf("tail: %d\n", a->tail->info);
+	
+	remocao(a, NULL);
+	remocao(a, a->tail);
+	remocao(a, a->head);
+
+	//percorre lista
+	percorreListaCabecaCauda(a);
+	
+	printf("\nhead: %d\n", a->head->info);
+	printf("tail: %d\n", a->tail->info);
+	
+	return 0;
+}
+
+void insercao(Lista *lista, Nodo *pivo, int info){
+	Nodo *novo_nodo;
+	novo_nodo = criaNodo(info);
 
 	if (pivo == NULL){
 		if (lista->size == 0)
@@ -52,30 +84,30 @@ void insercao(LISTA *lista, Node *pivo, int num){
 	lista->size++;	
 }
 
-int remocao(LISTA *lista, Node *pivot){
-	Node *antigo;
+int remocao(Lista *lista, Nodo *pivo){
+	Nodo *antigo;
 
 	if (lista->size == 0) {
 		printf("Impossivel excluir. Lista vazia!\n");
 		return 0;
 	}
 	
-	if (pivot == NULL){
+	if (pivo == NULL){
 		antigo = lista->head;
 		lista->head = lista->head->next;
 		
 		if (lista->head == NULL)
 			lista->tail = NULL;
 	}else{
-		if (pivot->next == NULL){
+		if (pivo->next == NULL){
 			printf("Impossivel excluir. O elemento pivo eh o ultimo na Lista!\n");
 			return 0;
 		}
 
-		antigo = pivot->next;
-		pivot->next = pivot->next->next;
-		if (pivot->next == NULL)
-			lista->tail = pivot;
+		antigo = pivo->next;
+		pivo->next = pivo->next->next;
+		if (pivo->next == NULL)
+			lista->tail = pivo;
 	}
 
 	free(antigo);
@@ -84,41 +116,12 @@ int remocao(LISTA *lista, Node *pivot){
 	return 0;
 }
 
-void percorreListaCabecaCauda(LISTA *lista){
-	Node *aux;
+void percorreListaCabecaCauda(Lista *lista){
+	Nodo *aux;
 	//Procedimento para percorrer a lista
 	aux = lista->head;
 	while(aux != NULL){
-		printf("%d, ", aux->num);
+		printf("%d, ", aux->info);
 		aux = aux->next;
 	}
-}
-
-int main(){
-	system("color 0A");
-	LISTA *a;
-	a = criaLista(); //cria lista
-	
-	insercao(a, NULL, 10);
-	insercao(a, a->head, 20);
-	insercao(a, a->tail, 30);
-	insercao(a, a->head, 50);
-
-	//percorre lista
-	percorreListaCabecaCauda(a);
-	
-	printf("\nhead: %d\n", a->head->num);
-	printf("tail: %d\n", a->tail->num);
-	
-	remocao(a, NULL);
-	remocao(a, a->tail);
-	remocao(a, a->head);
-
-	//percorre lista
-	percorreListaCabecaCauda(a);
-	
-	printf("\nhead: %d\n", a->head->num);
-	printf("tail: %d\n", a->tail->num);
-	
-	return 0;
 }
